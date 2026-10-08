@@ -1,4 +1,3 @@
-# Databricks notebook source
 from pyspark.sql import functions as F, Window
 from delta.tables import DeltaTable
 
@@ -6,7 +5,6 @@ STORAGE = "<storage>"
 bronze = f"abfss://bronze@strgweatherde.dfs.core.windows.net/"
 silver = f"abfss://silver@strgweatherde.dfs.core.windows.net/weather_hourly"
 
-# COMMAND ----------
 
 raw = (spark.read.option("multiLine", True).json(bronze + "*.json")
        .select("_metadata.file_path", "latitude", "longitude", "hourly"))
@@ -33,7 +31,6 @@ df = (flat
           F.col("r.wind_speed_10m").alias("wind_kmh")))
 display(df.limit(10))
 
-# COMMAND ----------
 
 w = Window.partitionBy("city", "reading_time").orderBy(F.col("ingest_date").desc())
 clean = (df.dropna(subset=["city", "reading_time"])
@@ -42,7 +39,6 @@ clean = (df.dropna(subset=["city", "reading_time"])
 bad = clean.filter("temperature_c < -50 OR temperature_c > 60").count()
 assert bad == 0, f"{bad} rows have impossible temperatures"
 
-# COMMAND ----------
 
 if DeltaTable.isDeltaTable(spark, silver):
     (DeltaTable.forPath(spark, silver).alias("t")

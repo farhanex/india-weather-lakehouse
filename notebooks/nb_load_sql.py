@@ -1,4 +1,3 @@
-# Databricks notebook source
 STORAGE = "strgweatherde"
 SERVER = "sql-weather-de.database.windows.net"
 DB = "weatherdb"
