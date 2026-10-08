@@ -40,3 +40,4 @@ if __name__ == "__main__":
         with open(path, "w") as f:
             json.dump(data, f)
         print(f"Saved {path}: {len(data['hourly']['time'])} hourly rows")
+        
